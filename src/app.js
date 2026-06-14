@@ -37,6 +37,7 @@ app.put("/livros/:id", (req, res) => {
  const index = buscaLivro(req.params.id);
  livros[index].titulo = req.body.titulo;
  res.status(200).json(livros);
+ console.log(`Livro atualizado: ${livros[index].titulo}`);
 });
 
 export default app;
