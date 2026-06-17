@@ -1,26 +1,24 @@
 import express from 'express';
+import conectaMongoDB from './config/dbConnect.js';
+import livro from './models/Livro.js';
+
+const conexao = await conectaMongoDB();
+
+//conexao.on("error", console.error.bind(console, "Erro de conexão:"));
+//conexao.once("open", () => {
+//  console.log("Conexão com o MongoDB estabelecida com sucesso!");
+//});
 
 const app = express();
 app.use(express.json());
-
-const livros = [
-  { id: 1, titulo: 'O Senhor dos Anéis', autor: 'J.R.R. Tolkien' },
-  { id: 2, titulo: 'Harry Potter e a Pedra Filosofal', autor: 'J.K. Rowling' },
-  { id: 3, titulo: 'O Código Da Vinci', autor: 'Dan Brown' },
-];
-
-function buscaLivro(id) {
- return livros.findIndex(livro => {
-   return livro.id === Number(id);
- })
-}
 
 app.get('/', (req, res) => {
   res.status(200).send('Cuso de Node.js - Express e MongoDB');
 });
 
-app.get('/livros', (req, res) => {
-  res.status(200).json(livros);
+app.get('/livros', async(req, res) => {
+  const listaLivros = await livro.find({});
+  res.status(200).json(listaLivros);
 });
 
 app.post('/livros', (req, res) => {
@@ -38,6 +36,12 @@ app.put("/livros/:id", (req, res) => {
  livros[index].titulo = req.body.titulo;
  res.status(200).json(livros);
  console.log(`Livro atualizado com Sucesso!!: ${livros[index].titulo}`);
+});
+
+app.delete("/livros/:id", (req, res) => {
+ const index = buscaLivro(req.params.id);
+ livros.splice(index, 1);
+ res.status(200).send("Livro removido com sucesso!");
 });
 
 export default app;
